@@ -20,9 +20,9 @@ genFusedLassoProximal(X, Y, groups, group.names = sort(unique(groups)),
 
 \item{group.names}{group names (length k)}
 
-\item{XX}{t(X) %*% X}
+\item{XX}{\code{t(X) \%*\% X}}
 
-\item{XY}{t(X) %*% Y}
+\item{XY}{\code{t(X) \%*\% Y}}
 
 \item{p}{Number of covariates}
 

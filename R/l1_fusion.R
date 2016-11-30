@@ -37,8 +37,8 @@ bigeigen <- function(X, method = "rARPACK") {
 #' @param Y vector of responses (length n)
 #' @param groups vector of group indicators (length n)
 #' @param group.names group names (length k)
-#' @param XX t(X) %*% X
-#' @param XY t(X) %*% Y
+#' @param XX \code{t(X) \%*\% X}
+#' @param XY \code{t(X) \%*\% Y}
 #' @param p Number of covariates
 #' @param k Number of groups
 #' @param samp.sizes Sample size for each group
