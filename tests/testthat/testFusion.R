@@ -1,6 +1,6 @@
 library(fuser)
 
-# Example of using l2 fusion approach to model heterogeneous
+# Test of using fusion approach to model heterogeneous
 # datasets
 set.seed(123)
 
@@ -22,21 +22,38 @@ X = lapply(1:k, function(k.i) matrix(rnorm(n.group*p),n.group, p)) # covariates
 y = sapply(1:k, function(k.i) X[[k.i]] %*% beta[,k.i] + rnorm(n.group, 0, sigma)) # response
 X = do.call('rbind', X)
 
-G = matrix(1, k, k) # Fusion strength hyperparameters (tau(k,k'))
+# Pairwise Fusion strength hyperparameters (tau(k,k'))
+# Same for all pairs in this example
+G = matrix(1, k, k) 
 
+# Use L1 fusion to estimate betas (with near-optimal sparsity and 
+# information sharing among groups)
+beta.estimate = fusedLassoProximal(X, y, groups, lambda=0.01, tol=3e-3, 
+                                   gamma=0.01, G, intercept=FALSE,
+                                   num.it=500) 
+
+test_that("L1 Fusion: Expect correlation between estimated and true beta.", {
+  expect_gt(cor(c(beta.estimate), c(beta)), 0.9)
+})
+
+test_that("L1 Fusion: Expect small RMSE between estimated and true beta.", {
+  expect_lt(mean((c(beta.estimate)-c(beta))^2), 0.005)
+})
+
+# Generate block diagonal matrices for L2 fusion approach
 transformed.data = generateBlockDiagonalMatrices(X, y, groups, G)
 
-# Estimate with near-optimal information sharing among groups
+# Use L2 fusion to estimate betas (with near-optimal information sharing among groups)
 beta.estimate = fusedL2DescentGLMNet(transformed.data$X, transformed.data$X.fused, 
                                      transformed.data$Y, groups, lambda=c(0,0.001,0.1,1),
                                      gamma=0.001)
 
 
-test_that("Expect correlation between estimated and true beta.", {
+test_that("L2 Fusion: Expect correlation between estimated and true beta.", {
   expect_gt(cor(c(beta.estimate[,,2]), c(beta)), 0.9)
 })
 
-test_that("Expect small RMSE between estimated and true beta.", {
+test_that("L2 Fusion: Expect small RMSE between estimated and true beta.", {
   expect_lt(mean((c(beta.estimate[,,2])-c(beta))^2), 0.005)
 })
 

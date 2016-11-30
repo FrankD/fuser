@@ -2,7 +2,8 @@
 % Please edit documentation in R/l1_fusion.R
 \name{genFusedLassoProximal}
 \alias{genFusedLassoProximal}
-\title{Fused lasso optimisation with the proximal-gradient method (Chen et al. 2010)}
+\title{Fused lasso optimisation with the proximal-gradient method (Chen et al. 2010).
+Internal method}
 \usage{
 genFusedLassoProximal(X, Y, groups, group.names = sort(unique(groups)),
   XX = NULL, XY, p, k, samp.sizes, lambda, gamma, C, G, epsilon = 1e-04 * p
@@ -53,7 +54,11 @@ genFusedLassoProximal(X, Y, groups, group.names = sort(unique(groups)),
 
 \item{X.list}{}
 }
+\value{
+
+}
 \description{
-Fused lasso optimisation with the proximal-gradient method (Chen et al. 2010)
+Fused lasso optimisation with the proximal-gradient method (Chen et al. 2010).
+Internal method
 }
 
