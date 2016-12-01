@@ -166,8 +166,6 @@ genFusedLassoProximal <- function(X, Y, groups, group.names=sort(unique(groups))
     
     improvement = sum(abs(B.old - B.new))
     
-    cat(improvement, '\n')
-    
     if (improvement < tol*p)
       break
     

@@ -183,7 +183,7 @@ fusedL2DescentGLMNet <- function(new.x, new.x.f, new.y, groups, lambda, gamma=1,
   group.names = sort(unique(groups))
   num.groups = length(group.names)
   
-  glmnet.result = glmnet(new.x, new.y, standardize=FALSE, intercept=FALSE, ...)
+  glmnet.result = glmnet(new.x, new.y, standardize=FALSE, ...)
   
   beta.mat = array(NA, c(dim(new.x)[2]/num.groups, num.groups, length(lambda)))
   
