@@ -5,7 +5,7 @@ Fused lasso for high-dimensional regression over groups
 
 ```
 library('devtools')
-install_github('fuser', 'FrankD')
+install_github('FrankD/fuser')
 ```
 ## Example
 
