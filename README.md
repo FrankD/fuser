@@ -1,5 +1,5 @@
 # fuser
-Fused lasso for high-dimensional regression over groups
+Fused lasso for high-dimensional regression over groups. This package implements the model described in [Dondelinger et al. (2016)](https://arxiv.org/abs/1611.00953).
 
 ## Installation
 
