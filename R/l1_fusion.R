@@ -1,5 +1,4 @@
-#require("irlba")
-#require("rARPACK")
+
 
 #' Calculate maximal eigenvalue for big matrices using singular
 #' value decomposition

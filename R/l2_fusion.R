@@ -1,6 +1,5 @@
 # L2 Fusion approach optimization
-#library("glmnet")
-#library("Matrix")
+
 
 # 
 
@@ -193,6 +192,131 @@ fusedL2DescentGLMNet <- function(new.x, new.x.f, new.y, groups, lambda, gamma=1,
                      s=lambda[lambda.i]*length(groups)/dim(new.x)[1]) # Correction for extra dimensions
     beta.mat[,,lambda.i] = coef.temp[2:length(coef.temp)]
   }
+  
+  return(beta.mat)
+}
+
+# Improvement for the general fused L2 formulation
+likelihoodImprovementGFL2R <- function(beta.new, beta.old, X, Y, groups, group.names,
+                                       lambda.sparse, lambda.fused, G) {
+  
+  fusion.penalty.old = 0
+  fusion.penalty.new = 0
+  
+  for(i in 1:(dim(beta.new)[2]-1)) {
+    for(j in (i+1):dim(beta.new)[2]) {
+      fusion.penalty.new = fusion.penalty.new + G[i,j] * sum((beta.new[,i]-beta.new[,j])^2)
+      fusion.penalty.old = fusion.penalty.old + G[i,j] * sum((beta.old[,i]-beta.old[,j])^2)
+    }
+  }
+  
+  lh.new = 0
+  lh.old = 0
+  
+  for(group.i in 1:dim(beta.new)[2]) {
+    group.name = group.names[group.i]
+    
+    lh.new = lh.new + sum((Y[groups==group.name] - X[groups==group.name,] %*% 
+                             beta.new[,group.i])^2)
+    lh.old = lh.old + sum((Y[groups==group.name] - X[groups==group.name,] %*% 
+                             beta.old[,group.i])^2)
+  }
+  
+  lh.new = 0.5*lh.new + lambda.sparse*sum(abs(beta.new)) + 
+    lambda.fused*fusion.penalty.new
+  lh.old = 0.5*lh.old + lambda.sparse*sum(abs(beta.old)) + 
+    lambda.fused*fusion.penalty.old
+  
+  #if(lh.new > lh.old) stop('Likelihood did not decrease.')
+  
+  return(list(improvement=lh.old - lh.new, lh.old=lh.old, lh.new=lh.new))
+}
+
+# Update one row of the beta matrix (i.e. the inseparable part of the greater 
+# separable problem) with L2 fused. Following Friedman et al (2007)
+betaRowFusedL2Update <- function(row.i, X, Y, V.inv, XVX, XVY, gamma,
+                                 G, beta.mat, groups, group.names) {
+  K = dim(beta.mat)[2] # Number of groups
+  
+  gamma_2 = 2*gamma
+  
+  for(beta.i in 1:K) {
+    beta.row = beta.mat[row.i,]
+    
+    # Least squares estimate without additional penalty beyond L2 fusion
+    if(!is.null(XVX)) {
+      ls.beta = (XVY[[beta.i]][row.i] - XVX[[beta.i]][row.i,-row.i] %*% beta.mat[-row.i,beta.i] +
+                   gamma_2*G[beta.i,-beta.i]%*%beta.row[-beta.i]) / 
+        (XVX[[beta.i]][row.i, row.i] + gamma_2*sum(G[beta.i,-beta.i]))
+    } else {
+      group.inds  = groups == group.names[beta.i]
+      ls.beta = (crossprod(X[group.inds,row.i], Y[group.inds]) - 
+                   crossprod(X[group.inds,row.i], X[group.inds,-row.i] %*% beta.mat[-row.i,beta.i]) +
+                   gamma_2*G[beta.i,-beta.i]%*%beta.row[-beta.i]) / 
+        (crossprod(X[group.inds, row.i]) + gamma_2*sum(G[beta.i,-beta.i]))
+    }
+    
+    # Now soft-threshold to get sparse lasso solution
+    #lasso.beta = sign(ls.beta) * max(abs(ls.beta) - lambda.sparse, 0)
+    
+    beta.mat[row.i,beta.i] = ls.beta
+  }
+  
+  return(beta.mat[row.i,])
+}
+
+# Fused L2 penalty with block coordinate descent method (Friedman et al. 2007)
+fusedL2DescentDirect <- function(X, Y, V.inv, groups, gamma, G,
+                                 beta.init=matrix(0, dim(X)[2], length(unique(groups))),
+                                 eps = 1e-6, c.flag=FALSE) {
+  p = dim(X)[2] # Dimensionality
+  group.names = sort(unique(groups))
+  
+  if(p < 10000) {
+    XVY = lapply(group.names, function(g) crossprod(X[groups==g,], V.inv[[which(group.names==g)]] %*% Y[groups==g]))
+    XVX = lapply(group.names, function(g) crossprod(X[groups==g,], V.inv[[which(group.names==g)]] %*% X[groups==g,]))
+  } else {
+    XVY = NULL
+    XVX = NULL
+  }
+  
+  beta.mat = beta.init
+  
+  if(!c.flag) {
+    
+    diff = Inf # maximum likelihood update
+    
+    beta.new = beta.mat
+    
+    while(diff > eps) {
+      
+      for(row.i in 1:p) {
+        beta.new[row.i,] = betaRowFusedL2Update(row.i, X, Y, V.inv, XVX, XVY, 
+                                                gamma, G, beta.new, groups, group.names)
+        #cat(beta.new[row.i,], '\n')
+      }
+      
+      # Not the correct likelihood for LMM
+      #diff = likelihoodImprovementGFL2R(beta.new, beta.mat, X, Y, groups, group.names,
+      #                                  lambda.sparse, lambda.fused, G) 
+      
+      diff = sqrt(mean((beta.mat-beta.new)^2))
+      
+      beta.mat = beta.new
+    }
+  } else {
+    # Not implemented
+    # Everything done inside C++ routine
+    # 
+    # if(!is.null(XX)) {
+    #   beta.mat = betaFusedL2Optim(X, Y, groups, XX, XY, lambda.sparse, 
+    #                               lambda.fused, G, beta.mat, eps)
+    # } else {
+    #   beta.mat = betaFusedL2Optim2(X, Y, groups, lambda.sparse, 
+    #                                lambda.fused, G, beta.mat, eps)
+    # }
+  }
+  
   
   return(beta.mat)
 }
