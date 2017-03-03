@@ -56,6 +56,7 @@ fusionLMM <- function(formula, random, data, groups, gamma,
   # Fit fused l2 model to fixed effects
   beta = refitLMMFixedEffects(X, Y, V.mats, groups, gamma=gamma, G=G)
   colnames(beta) = group.ids
+  rownames(beta) = colnames(X)
   
   # Update models with beta estimates under fusion
   lme.models = lapply(group.ids, function(group.id) {
@@ -98,7 +99,7 @@ refitLMMFixedEffects <- function(X, Y, V, groups, gamma=0, G, eps=1e-5) {
   
 }
 
-#' Prediction method for fused.lmm objects
+#' Prediction method for observed individuals
 #' 
 #' @description BLUP estimation of the response for new covariate data.
 #'
@@ -110,18 +111,58 @@ refitLMMFixedEffects <- function(X, Y, V, groups, gamma=0, G, eps=1e-5) {
 #' model.
 #' 
 #' @return A matrix of fixed effects for each group.
-predict.fused.lmm <- function(object, newdata.fixed, newdata.random, groups, ...) {
-  group.ids = sort(unique(groups))
+predictBLUP <- function(object, newdata.fixed, newdata.Z, groups, ...) {
+  group.ids = names(object)
   
   # Predict for each group
-  y.predict = lapply(group.ids, function(group.id) {
+  y.temp = lapply(group.ids, function(group.id) {
     model = object[[group.id]]
-    y.predict = newdata.fixed %*% model$beta.fused + newdata.random %*% model$G %*% t(model$Z) %*% 
-      solve(model$X) %*% model$resid.fixed
+    y.predict = newdata.fixed[groups==group.id,] %*% model$beta.fused + newdata.Z[[group.id]] %*% model$G %*% t(model$Z) %*% 
+      solve(model$V) %*% model$resid.fixed
   })
-  browser()
-  # Something off with calculation of Z -- needs further work
-  return(do.call('rbind', y.predict))
+  names(y.temp) = group.ids
+  
+  y.predict = matrix(NA, length(groups), 1)
+  
+  for(group.id in group.ids) {
+    y.predict[groups==group.id] = y.temp[[group.id]] 
+  }
+  
+  return(y.predict)
+  
+}
+
+
+#' Prediction method for unobserved individuals
+#' 
+#' @description Prediction of response for unobserved individuals,
+#' using only fixed effects.
+#'
+#' @param object An S3 object of class 'fused.lmm'
+#' @param newdata.fixed Model matrix for the fixed effects
+#' @param groups A vector of group indicators (length n). Note that group 
+#' indicators must be identical to the ones used to train the fused.lmm
+#' model.
+#' 
+#' @return A matrix of fixed effects for each group.
+predictFixed <- function(object, newdata.fixed, groups, ...) {
+  group.ids = names(object)
+  
+  # Predict for each group
+  y.temp = lapply(group.ids, function(group.id) {
+    model = object[[group.id]]
+    y.predict = newdata.fixed[groups==group.id,] %*% model$beta.fused[colnames(newdata.fixed),,drop=FALSE]
+  })
+  names(y.temp) = group.ids
+  
+  # Rearrange to reflect input
+  y.predict = matrix(NA, length(groups), 1)
+  
+  for(group.id in group.ids) {
+    y.predict[groups==group.id] = y.temp[[group.id]] 
+  }
+  
+  return(y.predict)
   
 }
 
