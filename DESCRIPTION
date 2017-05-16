@@ -21,7 +21,8 @@ Imports: Matrix,
     RcppEigen,
     nlme,
     mgcv,
-    glmnet
+    glmnet,
+    RSpectra
 LinkingTo:
     Rcpp,
     RcppArmadillo,
