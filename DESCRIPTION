@@ -20,7 +20,8 @@ Imports: Matrix,
     RcppArmadillo,
     RcppEigen,
     nlme,
-    mgcv
+    mgcv,
+    glmnet
 LinkingTo:
     Rcpp,
     RcppArmadillo,
