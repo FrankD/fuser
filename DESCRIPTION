@@ -18,7 +18,9 @@ Imports: Matrix,
     rARPACK,
     Rcpp,
     RcppArmadillo,
-    RcppEigen
+    RcppEigen,
+    glmnet,
+    RSpectra
 LinkingTo:
     Rcpp,
     RcppArmadillo,
