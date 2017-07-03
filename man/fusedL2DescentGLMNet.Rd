@@ -62,4 +62,3 @@ beta.estimate = fusedL2DescentGLMNet(transformed.data$X, transformed.data$X.fuse
                                      transformed.data$Y, groups, lambda=c(0,0.001,0.1,1),
                                      gamma=0.001)
 }
-

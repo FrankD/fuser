@@ -80,4 +80,3 @@ beta.estimate = fusedLassoProximal(X, y, groups, lambda=0.01, tol=3e-3,
                                    gamma=0.01, G, intercept=FALSE,
                                    num.it=500) 
 }
-

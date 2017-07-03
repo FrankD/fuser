@@ -58,4 +58,3 @@ G = matrix(1, k, k)
 # Generate block diagonal matrices
 transformed.data = generateBlockDiagonalMatrices(X, y, groups, G)
 }
-

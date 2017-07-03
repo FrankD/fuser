@@ -61,4 +61,3 @@ genFusedLassoProximal(X, Y, groups, group.names = sort(unique(groups)),
 Fused lasso optimisation with the proximal-gradient method (Chen et al. 2010).
 Internal method
 }
-

@@ -19,4 +19,3 @@ The maximal eigenvalue
 Calculate maximal eigenvalue for big matrices using singular
 value decomposition
 }
-
