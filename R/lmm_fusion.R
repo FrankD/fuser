@@ -125,7 +125,7 @@ predictBLUP <- function(object, newdata.fixed, newdata.Z, groups, ...) {
   y.predict = matrix(NA, length(groups), 1)
 
   for(group.id in group.ids) {
-    y.predict[groups==group.id] = y.temp[[group.id]]
+    y.predict[groups==group.id] = as.matrix(y.temp[[group.id]])
   }
 
   return(y.predict)
