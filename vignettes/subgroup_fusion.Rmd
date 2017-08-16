@@ -75,6 +75,13 @@ beta.estimate = fusedLassoProximal(X, y, groups, lambda=0.001, tol=9e-5,
                                    num.it=2000) 
 ```
 
+Alternatively, we can use the C++ implementation of the proximal algorithm by Oliver Wilkinson. This can be faster on some systems, especially for large numbers of subgroups.
+
+```{r,eval=FALSE}
+beta.estimate = fusedLassoProximal(X, y, groups, lambda=0.001, tol=9e-5, 
+                                   gamma=0.001, G, intercept=FALSE,
+                                   num.it=2000, c.flag=TRUE) 
+```
 
 ```{r, fig.align='center', fig.width=5}
 plotting.frame = data.frame(Beta.True=c(beta),

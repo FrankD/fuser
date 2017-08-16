@@ -1,21 +1,22 @@
 .pkg.env <- new.env(parent = emptyenv())
 .pkg.env$lastNumIters <- NA
 
-#' Calculate maximal eigenvalue for big matrices using singular
-#' value decomposition
+#' Big eigenvalue calculation
 #'
-#' @param X Matrix to be evaluated (can be a bigmatrix)
+#' Calculate maximal eigenvalue of \code{t(X) \%*\% X} for big
+#' matrices using singular value decomposition.
+#'
+#' @param X matrix to be evaluated (can be a Matrix object).
 #' @param method One of 'irlba' or 'RSpectra'
 #'
-#' @return The maximal eigenvalue
+#' @return The maximal eigenvalue.
 #'
 #' @export
 #' @import irlba
 #' @import RSpectra
-#'
 bigeigen <- function(X, method = "RSpectra") {
   if (method == "irlba") {
-    # Doesn't work currently, not sure why
+    # Define multiplication function
     matmul <- function(A, B) {
       # Bigalgebra requires matrix/vector arguments
       if (is.null(dim(B)))
@@ -55,15 +56,15 @@ fusedLassoProximalIterationsTaken <- function() {
 #' @param samp.sizes Sample size for each group
 #' @param lambda Sparsity hyperparameter
 #' @param gamma Fusion hyperparameter
-#' @param C
-#' @param G
-#' @param epsilon
-#' @param tol
-#' @param num.it
-#' @param lam.max
-#' @param intercept
-#' @param penalty.factors
-#' @param X.list
+#' @param C constraints
+#' @param G pairwise fusion hyperparameters (tau)
+#' @param epsilon step size
+#' @param tol tolerance
+#' @param num.it number of iterations
+#' @param lam.max maximal eigenvalue (pre-calculated)
+#' @param intercept whether to include intercept or not
+#' @param penalty.factors setting l1 penalty factors for different coefficients
+#' @param X.list X as a list (required if lam.max calculated on the fly)
 #' @param c.flag C++ subroutines will be used if true.
 #'
 #' @return

@@ -10,6 +10,8 @@ generateBlockDiagonalMatrices(X, Y, groups, G, intercept = FALSE,
 \arguments{
 \item{X}{covariates matrix (n by p).}
 
+\item{Y}{response vector (length n).}
+
 \item{groups}{vector of group indicators (ideally factors, length n)}
 
 \item{G}{matrix representing the fusion strengths between pairs of
@@ -19,8 +21,6 @@ groups (K by K). Zero entries are assumed to be independent pairs.}
 
 \item{penalty.factors}{vector of weights for the penalization of
 each covariate (length p)}
-
-\item{response}{vector (length n).}
 }
 \value{
 A list with components X, Y, X.fused and penalty, where

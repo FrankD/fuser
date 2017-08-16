@@ -14,7 +14,11 @@ fusedL2DescentGLMNet(transformed.x, transformed.x.f, transformed.y, groups,
 
 \item{transformed.y}{Transformed response (output of generateBlockDiagonalMatrices)}
 
+\item{groups}{Grouping factors for samples (a vector of size n, with K factor levels)}
+
 \item{lambda}{Sparsity penalty hyperparameter}
+
+\item{gamma}{Fusion penalty hyperparameter}
 
 \item{...}{Further options passed to glmnet.}
 }

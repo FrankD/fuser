@@ -2,20 +2,19 @@
 % Please edit documentation in R/l1_fusion.R
 \name{bigeigen}
 \alias{bigeigen}
-\title{Calculate maximal eigenvalue for big matrices using singular
-value decomposition}
+\title{Big eigenvalue calculation}
 \usage{
 bigeigen(X, method = "RSpectra")
 }
 \arguments{
-\item{X}{Matrix to be evaluated (can be a bigmatrix)}
+\item{X}{matrix to be evaluated (can be a Matrix object).}
 
 \item{method}{One of 'irlba' or 'RSpectra'}
 }
 \value{
-The maximal eigenvalue
+The maximal eigenvalue.
 }
 \description{
-Calculate maximal eigenvalue for big matrices using singular
-value decomposition
+Calculate maximal eigenvalue of \code{t(X) \%*\% X} for big
+matrices using singular value decomposition.
 }

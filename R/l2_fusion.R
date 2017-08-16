@@ -4,7 +4,7 @@
 #' Generate block diagonal matrices to allow for fused L2 optimization with glmnet.
 #'
 #' @param X covariates matrix (n by p).
-#' @param response vector (length n).
+#' @param Y response vector (length n).
 #' @param groups vector of group indicators (ideally factors, length n)
 #' @param G matrix representing the fusion strengths between pairs of
 #' groups (K by K). Zero entries are assumed to be independent pairs.
@@ -127,9 +127,9 @@ generateBlockDiagonalMatrices <- function(X, Y, groups, G, intercept=FALSE,
 #' @param transformed.x Transformed covariates (output of generateBlockDiagonalMatrices)
 #' @param transformed.x.f Transformed fusion constraints (output of generateBlockDiagonalMatrices)
 #' @param transformed.y Transformed response (output of generateBlockDiagonalMatrices)
-#' @param groups
+#' @param groups Grouping factors for samples (a vector of size n, with K factor levels)
 #' @param lambda Sparsity penalty hyperparameter
-#' @param gamma
+#' @param gamma Fusion penalty hyperparameter
 #' @param ... Further options passed to glmnet.
 #'
 #' @return Matrix of fitted beta values.

@@ -5,8 +5,10 @@ Authors@R: c(
         person("Frank", "Dondelinger", email = "fdondelinger.work@gmail.com", role = c("aut", "cre")),
         person("Olivier", "Wilkinson", role = c("aut"))
     )
-Description: Frank might write a description here which will tell you
-                exactly what this package does.
+Description: The fuser package enables high-dimensional penalized regression 
+    across heterogeneous subgroups. Fusion penalties are used to share information
+    about the linear parameters across subgroups. The underlying model is described 
+    in detail in Dondelinger and Mukherjee (2017).
 Depends:
     R (>= 3.2.0)
 License: GPL-3

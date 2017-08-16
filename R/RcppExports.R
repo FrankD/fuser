@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 getNumberNativeIterationsTaken <- function() {
-    .Call('_fuser_getNumberNativeIterationsTaken', PACKAGE = 'fuser')
+    .Call('fuser_getNumberNativeIterationsTaken', PACKAGE = 'fuser')
 }
 
 genFusedLassoProximal_loop <- function(XX, XY, X_list, Y, samp_sizes, C, intercept, p, k, num_iters, penalty_factors, L_U_inv, B_old, mu, W, weighted_delta_f, tol) {
-    .Call('_fuser_genFusedLassoProximal_loop', PACKAGE = 'fuser', XX, XY, X_list, Y, samp_sizes, C, intercept, p, k, num_iters, penalty_factors, L_U_inv, B_old, mu, W, weighted_delta_f, tol)
+    .Call('fuser_genFusedLassoProximal_loop', PACKAGE = 'fuser', XX, XY, X_list, Y, samp_sizes, C, intercept, p, k, num_iters, penalty_factors, L_U_inv, B_old, mu, W, weighted_delta_f, tol)
 }
 
