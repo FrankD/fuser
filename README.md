@@ -3,7 +3,7 @@ Fused lasso for high-dimensional regression over groups. This package implements
 
 ## Installation
 
-```
+```r
 library('devtools')
 install_github('FrankD/fuser')
 ```
@@ -11,7 +11,7 @@ install_github('FrankD/fuser')
 
 See also the included vignette.
 
-```
+```r
 library(fuser)
 set.seed(123)
 

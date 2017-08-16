@@ -12,20 +12,20 @@ generateBlockDiagonalMatrices(X, Y, groups, G, intercept = FALSE,
 
 \item{groups}{vector of group indicators (ideally factors, length n)}
 
-\item{G}{matrix representing the fusion strengths between pairs of 
+\item{G}{matrix representing the fusion strengths between pairs of
 groups (K by K). Zero entries are assumed to be independent pairs.}
 
 \item{intercept}{whether to include an (per-group) intercept in the model}
 
-\item{penalty.factors}{vector of weights for the penalization of 
+\item{penalty.factors}{vector of weights for the penalization of
 each covariate (length p)}
 
 \item{response}{vector (length n).}
 }
 \value{
 A list with components X, Y, X.fused and penalty, where
-X is a n by pK block-diagonal bigmatrix, Y is a 
-re-arranged bigvector of length n, and X.fused is a 
+X is a n by pK block-diagonal bigmatrix, Y is a
+re-arranged bigvector of length n, and X.fused is a
 choose(K,2)*p by pK bigmatrix encoding the fusion penalties.
 }
 \description{
@@ -44,18 +44,17 @@ groups = rep(1:k, each=n.group) # group indicators
 beta = matrix(0, p, k)
 nonzero.ind = rbinom(p*k, 1, 0.025/k) # Independent coefficients
 nonzero.shared = rbinom(p, 1, 0.025) # shared coefficients
-beta[which(nonzero.ind==1)] = rnorm(sum(nonzero.ind), 1, 0.25) 
+beta[which(nonzero.ind==1)] = rnorm(sum(nonzero.ind), 1, 0.25)
 beta[which(nonzero.shared==1),] = rnorm(sum(nonzero.shared), -1, 0.25)
 
-X = lapply(1:k, function(k.i) matrix(rnorm(n.group*p),n.group, p)) # covariates 
+X = lapply(1:k, function(k.i) matrix(rnorm(n.group*p),n.group, p)) # covariates
 y = sapply(1:k, function(k.i) X[[k.i]] \%*\% beta[,k.i] + rnorm(n.group, 0, sigma)) # response
 X = do.call('rbind', X)
 
 # Pairwise Fusion strength hyperparameters (tau(k,k'))
 # Same for all pairs in this example
-G = matrix(1, k, k) 
+G = matrix(1, k, k)
 
 # Generate block diagonal matrices
 transformed.data = generateBlockDiagonalMatrices(X, y, groups, G)
 }
-

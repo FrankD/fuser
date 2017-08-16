@@ -5,12 +5,12 @@
 \title{Calculate maximal eigenvalue for big matrices using singular
 value decomposition}
 \usage{
-bigeigen(X, method = "rARPACK")
+bigeigen(X, method = "RSpectra")
 }
 \arguments{
 \item{X}{Matrix to be evaluated (can be a bigmatrix)}
 
-\item{method}{One of 'irlba' or 'rARPACK'}
+\item{method}{One of 'irlba' or 'RSpectra'}
 }
 \value{
 The maximal eigenvalue
@@ -19,4 +19,3 @@ The maximal eigenvalue
 Calculate maximal eigenvalue for big matrices using singular
 value decomposition
 }
-

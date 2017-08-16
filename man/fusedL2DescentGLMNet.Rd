@@ -4,22 +4,19 @@
 \alias{fusedL2DescentGLMNet}
 \title{Optimise the fused L2 model with glmnet (using transformed input data)}
 \usage{
-fusedL2DescentGLMNet(new.x, new.x.f, new.y, groups, lambda, gamma = 1, ...)
+fusedL2DescentGLMNet(transformed.x, transformed.x.f, transformed.y, groups,
+  lambda, gamma = 1, ...)
 }
 \arguments{
-\item{...}{Further options passed to glmnet.}
-
 \item{transformed.x}{Transformed covariates (output of generateBlockDiagonalMatrices)}
 
 \item{transformed.x.f}{Transformed fusion constraints (output of generateBlockDiagonalMatrices)}
 
 \item{transformed.y}{Transformed response (output of generateBlockDiagonalMatrices)}
 
-\item{num.groups}{Number of groups (K)}
+\item{lambda}{Sparsity penalty hyperparameter}
 
-\item{group.names}{Names for the groups (optional)}
-
-\item{lambda.sparse}{Sparsity penalty hyperparameter}
+\item{...}{Further options passed to glmnet.}
 }
 \value{
 Matrix of fitted beta values.
@@ -43,16 +40,16 @@ groups = rep(1:k, each=n.group) # group indicators
 beta = matrix(0, p, k)
 nonzero.ind = rbinom(p*k, 1, 0.025/k) # Independent coefficients
 nonzero.shared = rbinom(p, 1, 0.025) # shared coefficients
-beta[which(nonzero.ind==1)] = rnorm(sum(nonzero.ind), 1, 0.25) 
+beta[which(nonzero.ind==1)] = rnorm(sum(nonzero.ind), 1, 0.25)
 beta[which(nonzero.shared==1),] = rnorm(sum(nonzero.shared), -1, 0.25)
 
-X = lapply(1:k, function(k.i) matrix(rnorm(n.group*p),n.group, p)) # covariates 
+X = lapply(1:k, function(k.i) matrix(rnorm(n.group*p),n.group, p)) # covariates
 y = sapply(1:k, function(k.i) X[[k.i]] \%*\% beta[,k.i] + rnorm(n.group, 0, sigma)) # response
 X = do.call('rbind', X)
 
 # Pairwise Fusion strength hyperparameters (tau(k,k'))
 # Same for all pairs in this example
-G = matrix(1, k, k) 
+G = matrix(1, k, k)
 
 # Generate block diagonal matrices
 transformed.data = generateBlockDiagonalMatrices(X, y, groups, G)
@@ -62,4 +59,3 @@ beta.estimate = fusedL2DescentGLMNet(transformed.data$X, transformed.data$X.fuse
                                      transformed.data$Y, groups, lambda=c(0,0.001,0.1,1),
                                      gamma=0.001)
 }
-
