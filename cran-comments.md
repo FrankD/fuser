@@ -1,3 +1,7 @@
+## Submission Comments
+
+Changed package DESCRIPTION as instructed by CRAN maintainers.
+
 ## Test environments
 * Linux Mint 18 Sarah,  R 3.4.1
 * win-builder (devel and release)
