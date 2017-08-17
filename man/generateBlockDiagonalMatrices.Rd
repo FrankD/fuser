@@ -47,8 +47,12 @@ nonzero.shared = rbinom(p, 1, 0.025) # shared coefficients
 beta[which(nonzero.ind==1)] = rnorm(sum(nonzero.ind), 1, 0.25)
 beta[which(nonzero.shared==1),] = rnorm(sum(nonzero.shared), -1, 0.25)
 
-X = lapply(1:k, function(k.i) matrix(rnorm(n.group*p),n.group, p)) # covariates
-y = sapply(1:k, function(k.i) X[[k.i]] \%*\% beta[,k.i] + rnorm(n.group, 0, sigma)) # response
+X = lapply(1:k,
+           function(k.i) matrix(rnorm(n.group*p),
+                                n.group, p)) # covariates
+y = sapply(1:k,
+           function(k.i) X[[k.i]] \%*\% beta[,k.i] +
+                           rnorm(n.group, 0, sigma)) # response
 X = do.call('rbind', X)
 
 # Pairwise Fusion strength hyperparameters (tau(k,k'))

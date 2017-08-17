@@ -240,7 +240,7 @@ fusedLassoProximalIterationsTaken <- function() {
 #' @param mu Smoothness parameter for proximal optimization
 #' @param tol Tolerance for optimization
 #' @param num.it Number of iterations
-#' @param lam.max Maximal eigenvalue of t(X) %*% X (will be calculate
+#' @param lam.max Maximal eigenvalue of \code{t(X) \%*\% X} (will be calculate
 #' if not provided)
 #' @param c.flag Whether to use Rcpp for certain calculations (see Details).
 #' @param intercept Whether to include a (group-specific) intercept term.
@@ -249,7 +249,7 @@ fusedLassoProximalIterationsTaken <- function() {
 #' at the cost of speed. (True by default iff p >= 10000)
 #'
 #' @details
-#' The proximal algorithm uses t(X)%*%X and t(X)%*%Y. The function will attempt to
+#' The proximal algorithm uses \code{t(X) \%*\% X} and \code{t(X) \%*\% Y}. The function will attempt to
 #' pre-calculate these values to speed up computation. This may not always be possible due to
 #' memory restrictions; at present this is only done for p < 10,000. When p > 10,000,
 #' crossproducts are calculated explicitly; calculation can be speeded up by using
@@ -275,8 +275,12 @@ fusedLassoProximalIterationsTaken <- function() {
 #' beta[which(nonzero.ind==1)] = rnorm(sum(nonzero.ind), 1, 0.25)
 #' beta[which(nonzero.shared==1),] = rnorm(sum(nonzero.shared), -1, 0.25)
 #'
-#' X = lapply(1:k, function(k.i) matrix(rnorm(n.group*p),n.group, p)) # covariates
-#' y = sapply(1:k, function(k.i) X[[k.i]] %*% beta[,k.i] + rnorm(n.group, 0, sigma)) # response
+#' X = lapply(1:k,
+#'            function(k.i) matrix(rnorm(n.group*p),
+#'                                 n.group, p)) # covariates
+#' y = sapply(1:k,
+#'            function(k.i) X[[k.i]] %*% beta[,k.i] +
+#'                            rnorm(n.group, 0, sigma)) # response
 #' X = do.call('rbind', X)
 #'
 #' # Pairwise Fusion strength hyperparameters (tau(k,k'))
