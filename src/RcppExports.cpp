@@ -9,7 +9,7 @@ using namespace Rcpp;
 
 // doubleCrossProd
 Eigen::MatrixXd doubleCrossProd(Eigen::MatrixXd A, Eigen::MatrixXd B);
-RcppExport SEXP fuser_doubleCrossProd(SEXP ASEXP, SEXP BSEXP) {
+RcppExport SEXP _fuser_doubleCrossProd(SEXP ASEXP, SEXP BSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,4 +18,14 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(doubleCrossProd(A, B));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_fuser_doubleCrossProd", (DL_FUNC) &_fuser_doubleCrossProd, 2},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_fuser(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

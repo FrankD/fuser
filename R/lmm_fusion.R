@@ -139,19 +139,26 @@ predictBLUP <- function(object, newdata.fixed, newdata.Z, groups, ...) {
 #' using only fixed effects.
 #'
 #' @param object An S3 object of class 'fused.lmm'
-#' @param newdata.fixed Model matrix for the fixed effects
+#' @param newdata.fixed Model matrix for the fixed effects.
+#' Note that the names of the fixed effects must be identical to the ones used
+#' to fit the fused.lmm object.
 #' @param groups A vector of group indicators (length n). Note that group
 #' indicators must be identical to the ones used to train the fused.lmm
 #' model.
+#'
+#' @export
 #'
 #' @return A matrix of fixed effects for each group.
 predictFixed <- function(object, newdata.fixed, groups, ...) {
   group.ids = names(object)
 
+  overlap = colnames(newdata.fixed)[colnames(newdata.fixed) %in%
+                                      names(object[[1]]$coefficients$fixed)]
+
   # Predict for each group
   y.temp = lapply(group.ids, function(group.id) {
     model = object[[group.id]]
-    y.predict = newdata.fixed[groups==group.id,] %*% model$beta.fused[colnames(newdata.fixed),,drop=FALSE]
+    y.predict = newdata.fixed[groups==group.id,overlap] %*% model$beta.fused[overlap,,drop=FALSE]
   })
   names(y.temp) = group.ids
 
