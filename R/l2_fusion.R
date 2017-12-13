@@ -11,11 +11,30 @@
 #' @param intercept whether to include an (per-group) intercept in the model
 #' @param penalty.factors vector of weights for the penalization of
 #' each covariate (length p)
+#' @param scaling Whether to scale each subgroup by its size. See Details for an explanation.
+#'
 #'
 #' @return A list with components X, Y, X.fused and penalty, where
 #' X is a n by pK block-diagonal bigmatrix, Y is a
 #' re-arranged bigvector of length n, and X.fused is a
 #' choose(K,2)*p by pK bigmatrix encoding the fusion penalties.
+#'
+#'#' @details We use the \code{glmnet} package to perform fused subgroup regression.
+#' In order to achieve this, we need to reformulate the problem as Y' = X'beta',
+#' where Y' is a concatenation of the responses Y and a vector of zeros, X' is a
+#' a matrix consisting of the block-diagonal matrix n by pK matrix X, where each
+#' block contains the covariates for one subgroups, and the choose(K,2)*p by pK
+#' matrix encoding the fusion penalties between pairs of groups. The vector of
+#' parameters beta' of length pK can be rearranged as a p by K matrix giving the
+#' parameters for each subgroup. The lasso penalty on the parameters is handled
+#' by glmnet.
+#'
+#' One weakness of the approach described above is that larger subgroups will
+#' have a larger influence on the global parameters $\lambda$ and $\gamma$.
+#' In order to mitigate this, we introduce the \code{scaling} parameter. If
+#' \code{scaling=TRUE}, then we scale the responses and covariates for each
+#' subgroup by the number of samples in that group.
+#'
 #'
 #' @import Matrix
 #'
@@ -52,7 +71,8 @@
 #' # Generate block diagonal matrices
 #' transformed.data = generateBlockDiagonalMatrices(X, y, groups, G)
 generateBlockDiagonalMatrices <- function(X, Y, groups, G, intercept=FALSE,
-                                          penalty.factors=rep(1, dim(X)[2])) {
+                                          penalty.factors=rep(1, dim(X)[2]),
+                                          scaling=TRUE) {
   group.names = sort(unique(groups))
   num.groups = length(group.names)
 
@@ -78,6 +98,12 @@ generateBlockDiagonalMatrices <- function(X, Y, groups, G, intercept=FALSE,
 
     new.y[row.range] = Y[group.inds]
     new.x[row.range, col.range] = X[group.inds,]
+
+    if(scaling) {
+      new.y[row.range] = new.y[row.range]/sum(group.inds)
+      new.x[row.range, col.range] =
+        new.x[row.range, col.range]/sum(group.inds)
+    }
 
     row.start = row.start + sum(group.inds)
     col.start = col.start + dim(X)[2]
