@@ -101,7 +101,7 @@ NumericVector getNumberNativeIterationsTaken() {
 Eigen::MatrixXd genFusedLassoProximal_loop(Nullable<List> XX, Nullable<List> XY, Nullable<List> X_list, Eigen::VectorXd Y, NumericVector samp_sizes, Eigen::MatrixXd C, bool intercept, int p, int k, int num_iters, Nullable<NumericVector> penalty_factors, double L_U_inv, Eigen::MatrixXd B_old, double mu, Eigen::MatrixXd W, Eigen::MatrixXd weighted_delta_f, double tol) {
   int i;
   MatrixXd B_sparsity, B_fusion, A_star, B_new;
-
+  MatrixXd delta_lik;
 
   for (i = 1; i <= num_iters; ++i) {
     B_sparsity = calculate_B_sparsity(B_old, p, k, penalty_factors);
@@ -110,14 +110,19 @@ Eigen::MatrixXd genFusedLassoProximal_loop(Nullable<List> XX, Nullable<List> XY,
     if (intercept) {
       // add a row to the B_sparsity matrix if intercept terms are enabled
       B_sparsity.conservativeResize(p + 1, Eigen::NoChange);
+      
       for (size_t i = 0; i < k; ++i) {
         // zero the extra row in B.sparsity and B.fusion
         B_sparsity(p, i) = 0;
         B_fusion(p, i) = 0;
       }
+      
+      delta_lik = calculate_delta_lik(k, p+1, B_old, XX, XY, X_list, Y, samp_sizes);
+    } else {
+      delta_lik = calculate_delta_lik(k, p, B_old, XX, XY, X_list, Y, samp_sizes);
     }
 
-    MatrixXd delta_lik = calculate_delta_lik(k, p, B_old, XX, XY, X_list, Y, samp_sizes);
+    
 
     MatrixXd A_star_sparsity = B_sparsity * C.block(0, 0, C.rows(), k);
     MatrixXd A_star_fusion = B_fusion * C.block(0, k, C.rows(), C.cols() - k);
