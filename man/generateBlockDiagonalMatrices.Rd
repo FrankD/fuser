@@ -5,7 +5,7 @@
 \title{Generate block diagonal matrices to allow for fused L2 optimization with glmnet.}
 \usage{
 generateBlockDiagonalMatrices(X, Y, groups, G, intercept = FALSE,
-  penalty.factors = rep(1, dim(X)[2]))
+  penalty.factors = rep(1, dim(X)[2]), scaling = TRUE)
 }
 \arguments{
 \item{X}{covariates matrix (n by p).}
@@ -21,6 +21,8 @@ groups (K by K). Zero entries are assumed to be independent pairs.}
 
 \item{penalty.factors}{vector of weights for the penalization of
 each covariate (length p)}
+
+\item{scaling}{Whether to scale each subgroup by its size. See Details for an explanation.}
 }
 \value{
 A list with components X, Y, X.fused and penalty, where
@@ -30,6 +32,23 @@ choose(K,2)*p by pK bigmatrix encoding the fusion penalties.
 }
 \description{
 Generate block diagonal matrices to allow for fused L2 optimization with glmnet.
+}
+\details{
+We use the \code{glmnet} package to perform fused subgroup regression.
+In order to achieve this, we need to reformulate the problem as Y' = X'beta',
+where Y' is a concatenation of the responses Y and a vector of zeros, X' is a
+a matrix consisting of the block-diagonal matrix n by pK matrix X, where each
+block contains the covariates for one subgroups, and the choose(K,2)*p by pK
+matrix encoding the fusion penalties between pairs of groups. The vector of
+parameters beta' of length pK can be rearranged as a p by K matrix giving the
+parameters for each subgroup. The lasso penalty on the parameters is handled
+by glmnet.
+
+One weakness of the approach described above is that larger subgroups will
+have a larger influence on the global parameters lambda and gamma.
+In order to mitigate this, we introduce the \code{scaling} parameter. If
+\code{scaling=TRUE}, then we scale the responses and covariates for each
+subgroup by the number of samples in that group.
 }
 \examples{
 set.seed(123)

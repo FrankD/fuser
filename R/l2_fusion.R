@@ -19,7 +19,7 @@
 #' re-arranged bigvector of length n, and X.fused is a
 #' choose(K,2)*p by pK bigmatrix encoding the fusion penalties.
 #'
-#'#' @details We use the \code{glmnet} package to perform fused subgroup regression.
+#' @details We use the \code{glmnet} package to perform fused subgroup regression.
 #' In order to achieve this, we need to reformulate the problem as Y' = X'beta',
 #' where Y' is a concatenation of the responses Y and a vector of zeros, X' is a
 #' a matrix consisting of the block-diagonal matrix n by pK matrix X, where each
@@ -30,7 +30,7 @@
 #' by glmnet.
 #'
 #' One weakness of the approach described above is that larger subgroups will
-#' have a larger influence on the global parameters $\lambda$ and $\gamma$.
+#' have a larger influence on the global parameters lambda and gamma.
 #' In order to mitigate this, we introduce the \code{scaling} parameter. If
 #' \code{scaling=TRUE}, then we scale the responses and covariates for each
 #' subgroup by the number of samples in that group.
@@ -214,7 +214,7 @@ fusedL2DescentGLMNet <- function(transformed.x, transformed.x.f,
   # Incorporate fusion penalty global hyperparameter
   transformed.x.f = transformed.x.f * sqrt(gamma *
                              (dim(transformed.x)[1] + dim(transformed.x.f)[1]))
-  transformed.x = rBind(transformed.x, transformed.x.f)
+  transformed.x = rbind(transformed.x, transformed.x.f)
 
   group.names = sort(unique(groups))
   num.groups = length(group.names)

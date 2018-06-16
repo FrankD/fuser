@@ -1,6 +1,6 @@
 Package: fuser
 Title: Fused Lasso for High-Dimensional Regression over Groups
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(
         person("Frank", "Dondelinger", email = "fdondelinger.work@gmail.com", role = c("aut", "cre")),
         person("Olivier", "Wilkinson", role = c("aut"))

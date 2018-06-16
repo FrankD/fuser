@@ -7,7 +7,7 @@
 \usage{
 fusedLassoProximal(X, Y, groups, lambda, gamma, G, mu = 1e-04, tol = 1e-06,
   num.it = 1000, lam.max = NULL, c.flag = FALSE, intercept = TRUE,
-  penalty.factors = NULL, conserve.memory = p >= 10000)
+  penalty.factors = NULL, conserve.memory = p >= 10000, scaling = TRUE)
 }
 \arguments{
 \item{X}{matrix of covariates (n by p)}
@@ -39,6 +39,9 @@ if not provided)}
 
 \item{conserve.memory}{Whether to calculate XX and XY on the fly, conserving memory
 at the cost of speed. (True by default iff p >= 10000)}
+
+\item{scaling}{if TRUE, scale the sum-squared loss for each group by 1/n_k
+where n_k is the number of samples in group k.}
 }
 \value{
 A matrix with the linear coefficients for each group (p by k).
