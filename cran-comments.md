@@ -1,5 +1,7 @@
 ## Submission Comments
 
+At request of maintainers, reduced the runtime duration of the tests.
+
 Resubmission that fixes warning message due to a deprecated function in the Matrix package. Apologies for not fixing this before my package was archived, I found the CRAN emails in my Junk folder...
 
 ## Test environments
